@@ -7,32 +7,32 @@ dotenv.config();
 exports.protect_route = async (req, res, next) => {
     try {
         const token = req.cookies.jwt;
-        if(!token){
-            return res.status(404).json({messsage: "Token não autorizado"})
+        
+        // Verificar se o token está presente
+        if (!token) {
+            return res.status(401).json({ message: "Token não autorizado" });
         }
          
+        // Verificar se o token é válido
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        if(!decoded){
-            return res.status(404).json({messsage: "Token inválido"})
+        if (!decoded) {
+            return res.status(401).json({ message: "Token inválido" });
         }
+
+        // Procurar o usuário com base no userId decodificado
         const user = await User.findById(decoded.userId).select("-password");
 
-        if(!user){
-            return res.status(404).json({messsage: "Usuário não encontrado"})
+        if (!user) {
+            return res.status(404).json({ message: "Usuário não encontrado" });
         }
 
+        // Se o usuário for encontrado, anexá-lo ao objeto de requisição
         req.user = user;
         next();
 
-
-
-
     } catch (error) {
-
-        console.log("Ero no protect route middleware", error.messsage)
-        res.status(500).json({messsage: "Erro interno do servidor"})
+        console.error("Erro no protect_route middleware:", error.message); // Corrigido para acessar 'message' corretamente
+        res.status(500).json({ message: "Erro interno do servidor" });
     }
 };
-
-

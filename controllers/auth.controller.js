@@ -1,7 +1,8 @@
 const User = require('../models/userModel');
 const generateToken = require('../lib/utils');
 const bcrypt = require('bcrypt');
-const cloudnary = require('../middlewares/cloudnary')
+const cloudnary = require('../middlewares/cloudnary');
+//const { checkout } = require('../routes/auth.routes');
 exports.signup = async (req, res) => {
     try {
         const { fullname, email, password, profilepic } = req.body;
@@ -110,7 +111,7 @@ exports.updateUser = async (req, res)=>{
         const userId = req.user._id;
 
         if(!profilepic){
-            return res.status(400).json({message: "Imagem de perfil é obrigatória."});
+            return res.status(400).json({message: "Imagem de perfil é obrigatória!"});
         }
         const uploadResponse = await cloudnary.uploadImage(profilepic);
         const updatedUser = await User.findByIdAndUpdate(userId, { profilepic: uploadResponse.secure_url }, { new: true });
@@ -123,3 +124,13 @@ exports.updateUser = async (req, res)=>{
         res.status(500).json({ message: "Erro interno do servidor." });
     }
 }
+exports.checkAuth = (req, res) => {
+    try {
+        // Recuperar o ID do usuário
+        res.status(200).json(req.user); // Corrigido o erro de digitação
+        // Buscar o usuário pelo Id (caso queira fazer uma busca no banco, adicione aqui)
+    } catch (error) {
+        console.error("Erro na busca do usuário:", error);
+        res.status(500).json({ message: "Erro interno do servidor." });
+    }
+};

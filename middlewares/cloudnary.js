@@ -12,7 +12,7 @@ cloudinary.config({
 });
 
 // Função para fazer upload de imagem
-const uploadImage = async (filePath, folder = "default") => {
+/* const uploadImage = async (filePath, folder = "default") => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
       folder, // Especifica a pasta no Cloudinary
@@ -33,11 +33,10 @@ const deleteImage = async (publicId) => {
     console.error("Erro ao deletar imagem:", error);
     throw error;
   }
-};
+}; */
 
 // Exportando os métodos e o próprio objeto cloudinary
 module.exports = {
   cloudinary,
-  uploadImage,
-  deleteImage,
+
 };
